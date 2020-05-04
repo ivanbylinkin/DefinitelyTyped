@@ -1,4 +1,4 @@
-import { getDocument, PDFDocumentProxy, PDFPromise, Util } from 'pdfjs-dist';
+import { getDocument, PDFDocumentProxy, PDFPromise, Util, PDFPageProxy, renderTextLayer, TextContent } from 'pdfjs-dist';
 
 //
 // Fetch the PDF document from the URL using promises
@@ -44,6 +44,17 @@ function renderPage(pageNum: number) {
 			viewport: viewport
 		};
 		page.render(renderContext);
+
+		page.getTextContent()
+			.then((textContent: TextContent) => {
+				// Render text layer into div
+				renderTextLayer({
+					textContent,
+					container: <HTMLDivElement>document.getElementById('text-layer-div'),
+					viewport,
+					textDivs: []
+				});
+			});
 	});
 }
 

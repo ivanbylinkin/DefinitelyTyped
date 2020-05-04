@@ -401,6 +401,23 @@ interface PDFRenderTask extends PDFLoadingTask<PDFPageProxy> {
     cancel(): void;
 }
 
+interface TextLayerRenderTask {
+    promise: Promise<any>;
+    /**
+     * Cancel the rendering task.  If the task is currently rendering it will not be cancelled until graphics pauses with a timeout.  The promise that this object extends will resolve when cancelled.
+     **/
+    cancel(): void;
+}
+
+interface RenderTextLayerProps {
+    textContent: TextContent;
+    container: Element;
+    viewport: PDFPageViewport;
+    textDivs: Element[];
+    timeout?: number;
+    enhanceTextSelection?: boolean;
+}
+
 interface PDFPageProxy {
 
     /**
@@ -677,3 +694,13 @@ declare function getDocument(
     passwordCallback?: (fn: (password: string) => void, reason: string) => string,
     progressCallback?: (progressData: PDFProgressData) => void
 ): PDFLoadingTask<PDFDocumentProxy>;
+
+/**
+ * This allows the use of the internal pdfjs text layer rendering engine
+ * Use this to render a text layer over the pdf page canvas inside a text layer div
+ * If using this function, render to also import the proper styles from "pdfjs-dist/web/pdf_viewer.css"
+ * and to add the "textLayer" class to the div where the text is being rendered to
+ * 
+ * @param props Required properties to render the default text layer'
+ */
+declare function renderTextLayer(props: RenderTextLayerProps): TextLayerRenderTask;
